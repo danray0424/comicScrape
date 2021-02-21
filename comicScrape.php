@@ -78,7 +78,6 @@ foreach ($titles as $title) { //Go through titles from file
 		// Clean up our inputs and define the issue slug we're going to searh for.
 		$slugify = new Slugify();
 		$titleSlug = $slugify->slugify($searchterm);
-		$comicvine_search = urlencode($searchterm . " " . $wanted);
 		$targeturl = $config->siteUrl . '/[^/]+/' . $titleSlug . '-' . $wanted . '[^\d"]+';
 		$targeturl = str_replace('/', '\/', $targeturl);
 
@@ -110,17 +109,6 @@ foreach ($titles as $title) { //Go through titles from file
 			);
 			$context = stream_context_create($opts);
 
-			// Hit comicvine for details about this issue
-			$cvdoc = file_get_contents("https://comicvine.gamespot.com/api/search/?api_key=$config->ComicvineKey&format=json&sort=name:asc&resources=issue&query=" . urlencode($comicvine_search));
-			$cvdata = json_decode($cvdoc);
-			$issue_title = $cvdata->results[0]->name;
-			if ($issue_title) {
-				$issue_title = " - $issue_title";
-			}
-			$issue_date = $cvdata->results[0]->cover_date;
-			$issue_date = substr($issue_date, 0, 4);
-			$issue_date = " ($issue_date)";
-
 
 			if (!$silent) echo "  Found issue $wanted. Downloading... ";
 
@@ -128,11 +116,14 @@ foreach ($titles as $title) { //Go through titles from file
 			$issuebinary = file_get_contents($issueURL, false, $context);
 
 			//Figure out where to save it (get filename from headers, or fall back to comicvine details)
-			$filename = get_real_filename($http_response_header, $issueURL);
-			if (!$silent) echo "  Done. Filename: $filename\n";
+			$filename = false;
+		#	$filename = get_real_filename($http_response_header, $issueURL);
 			if (!$filename) {
-				$filename = $title . " " . sprintf("%03d", $wanted) . $issue_title . $issue_date . '.cbz';
+				// Getting the filename from the HTTP response header failed, so hit comicvine for details about this issue
+				$filename = build_filename_from_comicvine(urlencode($searchterm . " " . $wanted), $config);
+
 			}
+			if (!$silent) echo "  Done. Filename: $filename\n";
 			$targetfilename = $config->comicDirectory . '/' . $title . '/' . $filename;
 			$savedIssues[] = $targetfilename;
 
@@ -163,4 +154,20 @@ function get_real_filename($headers,$url)
             return $matches[1];
         }
     }
+}
+
+function build_filename_from_comicvine($comicvine_search, $config) {
+	echo "cv searc: $comicvine_search\n";
+	$cvdoc = file_get_contents("https://comicvine.gamespot.com/api/search/?api_key=$config->ComicvineKey&format=json&sort=name:asc&resources=issue&query=" . urlencode($comicvine_search));
+	$cvdata = json_decode($cvdoc);
+	print_r($cvdata);
+	$issue_title = $cvdata->results[0]->name;
+	if ($issue_title) {
+		$issue_title = " - $issue_title";
+	}
+	$issue_date = $cvdata->results[0]->cover_date;
+	$issue_date = substr($issue_date, 0, 4);
+	$issue_date = " ($issue_date)";
+	$filename = $cvdata->results[0]->volume->name . " " . sprintf("%03d", $cvdata->results[0]->issue_number) . $issue_title . $issue_date . '.cbz';
+	return $filename;
 }
