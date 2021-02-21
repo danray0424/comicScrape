@@ -7,7 +7,7 @@ It can be run periodically to keep active titles up to date with latest releases
 
 INSTALLATION
 
-comicScrape's requirements are managed by Composer. 
+comicScrape's requirements are managed by Composer. Get composer at https://getcomposer.org/.
 
 Clone down the repository, change to its directory and run 'composer install'.
 
