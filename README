@@ -44,19 +44,15 @@ The fields are:
 
 PULL LIST
 
-The pull list file (named "titles.txt" by default, but renameable in scrapeconfig.json) should contain a list of the
-titles you want the script to keep up with.
+The pull list file (named "titles.txt" by default, but renameable in scrapeconfig.json) should contain a list of the titles you want the script to keep up with.
 
 List these one comic per line, as per the format in the example file.
 
-Note that sometimes the search term you have to use doesn't match the title as it appears in the downloaded comics. You can
-configure comicScrape to handle that with this special format:
+Note that sometimes the search term you have to use doesn't match the title as it appears in the downloaded comics. You can configure comicScrape to handle that with this special format:
 
 	Search Term|File Title
 
-An example of that in the sample titles file is "Once and Future|Once & Future". comicScrape will use "Once and Future" to search
-GetComics for issues, but the files that come down are named "Once & Future 001 (2020).cbz", for instance. Unless the script is
-configured to understand this, it'll be unable to track and file these comics properly.
+An example of that in the sample titles file is "Once and Future|Once & Future". comicScrape will use "Once and Future" to search GetComics for issues, but the files that come down are named "Once & Future 001 (2020).cbz", for instance. Unless the script is configured to understand this, it'll be unable to track and file these comics properly.
 
 
 RUNNING THE SCRIPT
@@ -77,8 +73,7 @@ When you launch the script, it will:
 	- Attempt to download those, and store them in the series folder
 	- Parse the filename out of the response headers. If this fails, hit Comicvine for a reasonable guess at a filename.
 
-It will report on its progress in a cheerful manner, and at the end will dump the list of files it 
-has just added to your directories.
+It will report on its progress in a cheerful manner, and at the end will dump the list of files it has just added to your directories.
 
 
 Two command-line switches enable extra super powers, and can be used in combination:
@@ -91,10 +86,8 @@ Two command-line switches enable extra super powers, and can be used in combinat
 
 DISCLAIMERS
 
-This script screen-scrapes a web resource which is somewhat uncool. However, the resource it's scraping
-exclusively contains pirated comic books, so, you know, no honor among thieves. Any gratitude you have toward me
-for this script, please express it with a contribution to GetComics.info to help keep their service up, okay?
+This script screen-scrapes a web resource which is somewhat uncool. Any gratitude you have toward me for this script, please express it with a contribution to GetComics.info to help keep their service up, okay?
+
 Go here and give generously: https://getcomics.info/support/
 
-Screen scraping is inherently brittle. While GetComics hasn't changed their page layout in quite some time,
-there's no reason to think they couldn't do so tomorrow and totally break this script. 
+Screen scraping is inherently brittle. While GetComics hasn't changed their page layout in quite some time, there's no reason to think they couldn't do so tomorrow and totally break this script. 
