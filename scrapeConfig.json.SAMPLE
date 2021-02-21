@@ -1,0 +1,9 @@
+{
+	"comments":"",
+	"siteUrl": "https://getcomics.info",
+	"queryFormat": "?s=",
+	"comicDirectory": "/Path/To/Comics",
+	"ComicvineKey": "YOUR-KEY",
+	"titlesFile": "./titles.txt",
+	"maxPageDepth": 3
+}

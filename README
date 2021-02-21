@@ -1,0 +1,100 @@
+comicScrape.php is a command line tool to progressively download a list of comic book titles from GetComics.info.
+
+It doesn't require authentication at getcomics, and works entirely on CLI without a browser.
+
+It can be run periodically to keep active titles up to date with latest releases, and has the ability to back-fill series that have several issues already out.
+
+
+INSTALLATION
+
+comicScrape's requirements are managed by Composer. 
+
+Clone down the repository, change to its directory and run 'composer install'.
+
+
+CONFIGURATION
+
+The scrapeConfig.json file contains variable necessary to configure comicScraper.php for your environment.
+
+The installation comes wiht a sample called scrapeConfig.json.SAMPLE. You should populate it with values appropriate to your system, and rename it to "scrapeConfig.json".
+
+
+The shipping contents of scrapeConfig.json.SAMPLE are:
+
+	{
+		"comments":"",
+		"siteUrl": "https://getcomics.info",
+		"queryFormat": "?s=",
+		"comicDirectory": "/Your/Path/To/Comics",
+		"ComicvineKey": "YOUR-KEY",
+		"titlesFile": "./titles",
+		"maxPageDepth": 3
+	}
+
+
+The fields are:
+
+	* siteUrl - the base path to getcomics.info, just in case that ever changes.
+	* queryFormat - The structure of how to spell a query on GetComics, just incase ditto.
+	* comicsDirectory - The path on your local machine to where your comics folders live. Should be writeable by the user running this script.
+	* ComicvineKey - Your own Comicvine API key. Get one for free at https://comicvine.com/api.
+	* titlesFile - The name of the file that contains your pull list series titles.
+	* maxPageDepth - How deep into GetComics' search results to go when backfilling a series.
+
+
+PULL LIST
+
+The pull list file (named "titles.txt" by default, but renameable in scrapeconfig.json) should contain a list of the
+titles you want the script to keep up with.
+
+List these one comic per line, as per the format in the example file.
+
+Note that sometimes the search term you have to use doesn't match the title as it appears in the downloaded comics. You can
+configure comicScrape to handle that with this special format:
+
+	Search Term|File Title
+
+An example of that in the sample titles file is "Once and Future|Once & Future". comicScrape will use "Once and Future" to search
+GetComics for issues, but the files that come down are named "Once & Future 001 (2020).cbz", for instance. Unless the script is
+configured to understand this, it'll be unable to track and file these comics properly.
+
+
+RUNNING THE SCRIPT
+
+Run the script from the command line:
+
+# ./comicScrape.php
+
+When you launch the script, it will:
+
+- Pick up and parse your config file
+- Load the list of comics on your pull list
+- For each title in that file:
+	- Find the folder named for them in your "comicsDirectory". Create the series directory if it doesn't exist.
+	- Look through that folder for the latest issue it contains. (By highest issue number.)
+	- Search GetComics for the title, and get the first "maxPageDepth" pages
+	- Search through those downloaded pages for links to issues with higer issue numbers than your latest one
+	- Attempt to download those, and store them in the series folder
+	- Parse the filename out of the response headers. If this fails, hit Comicvine for a reasonable guess at a filename.
+
+It will report on its progress in a cheerful manner, and at the end will dump the list of files it 
+has just added to your directories.
+
+
+Two command-line switches enable extra super powers, and can be used in combination:
+
+* -t or --title allows you to override the pull list file with one or more titles submitted on the command line:
+	#./comicScrape.php -t "Walking Dead" -t "Saga"
+
+* -s or --silent suppresses all command line output
+
+
+DISCLAIMERS
+
+This script screen-scrapes a web resource which is somewhat uncool. However, the resource it's scraping
+exclusively contains pirated comic books, so, you know, no honor among thieves. Any gratitude you have toward me
+for this script, please express it with a contribution to GetComics.info to help keep their service up, okay?
+Go here and give generously: https://getcomics.info/support/
+
+Screen scraping is inherently brittle. While GetComics hasn't changed their page layout in quite some time,
+there's no reason to think they couldn't do so tomorrow and totally break this script. 
