@@ -11,6 +11,8 @@ comicScrape's requirements are managed by Composer. Get composer at https://getc
 
 Clone down the repository, change to its directory and run 'composer install'.
 
+Complete the configuration steps below, and run on the command line.
+
 
 CONFIGURATION
 
@@ -50,12 +52,16 @@ List these one comic per line, as per the format in the example file.
 
 No other prep is necessary; the script will attempt to set up a folder to land these issues in if it doesn't exist, and the first run will look $maxPageDepth pages back for the first issue.
 
+Some special cases:
 
-Note that sometimes (usually due to special characters) the search term you have to use doesn't match the title as it appears in the downloaded comics. You can configure comicScrape to handle that with this special format:
+	* Sometimes you have to figure out what works on GetComic's search, versus how the market is spelling a series. A popular series named "Batman/Catwoman" is appearing in GetComics as "Batman - Catwoman", so that's what to put in your pull list file. 
 
-	Search Term|File Title
+	* Sometimes (usually due to special characters) the search term you have to use doesn't match the title as it appears in the downloaded comics. You can configure comicScrape to handle that with this special format:
 
-An example of that in the sample titles file is "Once and Future|Once & Future". comicScrape will use "Once and Future" to search GetComics for issues, but the files that come down are named "Once & Future 001 (2020).cbz", for instance. Unless the script is configured to understand this, it'll be unable to track and file these comics properly.
+		Search Term|File Title
+
+	An example of that in the sample titles file is "Once and Future|Once & Future". If you configure both values in your file, comicScrape will use "Once and Future" to search GetComics for issues, but handle the fact that the files that come down are named "Once & Future 001 (2020).cbz", for instance. Unless the script is configured to understand this, it'll be unable to track and file these comics properly.
+
 
 
 RUNNING THE SCRIPT
@@ -90,7 +96,9 @@ Two command-line switches enable extra super powers, and can be used in combinat
 
 TODOS
 
- * More robust filename handling. I haven't explored what happens if a series title has an illegal character in it (e.g. "Hack/Slash"). I expect explosions.
+ * More robust special character handling. I haven't explored what happens if a series title has an illegal character in it (e.g. "Hack/Slash"). It appears that GetComics is solving that for themselves by replacing the / with a -, but nonetheless, this is a place the script is going to be brittle.
+
+ * Add an optional delay factor to our hits to GetComics. Anti-hammering at least, perhaps with a humanizing jitter in the delay.
 
 
 DISCLAIMERS
