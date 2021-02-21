@@ -19,14 +19,14 @@ $file = file_get_contents('./scrapeConfig.json');
 $config = json_decode($file);
 
 
-if (array_count_values($titles) > 0) {
+if (count($titles) == 0) {
 	$titles = file($config->titlesFile);
 }
 
 ini_set('memory_limit', '10G');
 
 
-$savedIssues = [''];
+$savedIssues = [];
 foreach ($titles as $title) { //Go through titles from file
 
 	// handle case where files have to be searched with different strings
@@ -60,7 +60,7 @@ foreach ($titles as $title) { //Go through titles from file
 
 	//collect up our search results page contents
 	$pages = '';
-	if (!$silent) echo "Getting search page ";
+	if (!$silent) echo " Getting search page ";
 	for ($i=1; $i <= $config->maxPageDepth ; $i++) { 
 		//Get whatever page we're on
 		$pagebase = $config->siteUrl . "/page/$i";
@@ -147,7 +147,7 @@ foreach ($titles as $title) { //Go through titles from file
 	} //end while true
 } //end foreach title
 
-if (!$silent) echo "\n------\nRun Complete. " . array_count_values($savedIssues) . " downloaded issues.";
+if (!$silent) echo "\n------\n\nRun Complete. " . count($savedIssues) . " downloaded issues.";
 foreach ($savedIssues as $issuepath) {
 	if (!$silent) echo " $issuepath\n";
 }
