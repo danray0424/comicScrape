@@ -19,7 +19,7 @@ $file = file_get_contents('./scrapeConfig.json');
 $config = json_decode($file);
 
 
-if (array_count_values($titles) == 0) {
+if (array_count_values($titles) > 0) {
 	$titles = file($config->titlesFile);
 }
 
